@@ -70,7 +70,8 @@ public class Main {
         // Metode Untuk Mengelola Pesanan
         int jumlahPesananSekarang = 0;//Awal Pesanan adalah 0, akan terus bertambah
         //apabila pelanggan tidak input 0/selesai/jumlah pesanan melebihi batas maksimal
-        for (int pesananKe = 1; pesananKe <= maxPesanan; pesananKe++) {
+        int pesananKe =1;
+        while (pesananKe <= maxPesanan) {
             System.out.print("\nSilahkah Masukkan Menu Pesanan Anda :\n");
             System.out.print("( Tekan 0 untuk Selesai)\n");
             System.out.print("Menu :   ");
