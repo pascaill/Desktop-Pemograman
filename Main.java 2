@@ -1,0 +1,459 @@
+//[Soal] Buatlah sebuah kelas utama (‘Main’) 
+//yang memiliki berbagai method untuk menampilkan 
+//daftar menu makanan dan minuman, menerima dan mengolah pesanan,
+//menghitung total biaya pesanan, dan mencetak struk pesanan untuk tampilkan ke layar
+//Import java scanner karena program memerlukan input dari pelanggan
+
+import java.util.Scanner;
+import java.util.ArrayList; //Import ArrayList untuk mencatat pesanan
+//karena ukuran array pesanan dan jumlah pesanan tidak terbatas/fleksibel
+import java.util.Arrays;//Import array untuk beberapa metode menggunakan array
+
+public class Main {
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        //Inisiasi Menu Makanan dan Minuman
+        Menu menuMakanan1 = new Menu("Nasi Goreng", 25000, "Makanan");
+        Menu menuMakanan2 = new Menu("Nasi Bakar", 30000, "Makanan");
+        Menu menuMakanan3 = new Menu("Nasi Lemak", 20000, "Makanan");
+        Menu menuMakanan4 = new Menu("Nasi Padang", 35000, "Makanan");
+
+        Menu menuMinuman1 = new Menu("Es Teh Manis", 8000, "Minuman");
+        Menu menuMinuman2 = new Menu("Jus Jeruk", 10000, "Minuman");
+        Menu menuMinuman3 = new Menu("Air Mineral", 12000, "Minuman");
+        Menu menuMinuman4 = new Menu("Kopi Es", 15000, "Minuman");
+
+        // Menyimpan Menu makanan dan Minuman Dalam Array yang berbeda
+        Menu[] menuMakanan = {menuMakanan1, menuMakanan2, menuMakanan3, menuMakanan4};
+        Menu[] menuMinuman = {menuMinuman1, menuMinuman2, menuMinuman3, menuMinuman4};
+
+        Scanner scanner = new Scanner(System.in);
+        //Inisiasi awal program adalah boolean false, artinya program tidak dalam
+        //kondisi selesai dijalankan atau running
+        boolean programDone = false;
+        while (!programDone) {//Disini akan looping dimana selagi boolean programDone
+            //dalam kondisi True atau program berjalan maka akan selalu dieksekusi tampilan
+            //awal
+            System.out.print("\n");
+            System.out.print("Ohayou Minnasan~!\n");
+            System.out.print("----------------------------------\n");
+            System.out.print("1. Order Menu\n");
+            System.out.print("2. Manajemen Restoran\n");
+            System.out.print("\n");
+            System.out.print("(Tekan 0 Untuk Keluar)\n");
+            System.out.print("----------------------------------\n");
+            System.out.print("Silahkan Pilih Program : ");
+            int pilihanProgram = scanner.nextInt();
+            scanner.nextLine();
+
+            if (pilihanProgram == 1) {
+                //Method untuk Menampilkan Menu Makanan dan Minuman Berdasarkan Kategorinya
+                //Disini, untuk menedapatkan nama, harga dan kategorinya maka kita
+                //Pergunakan method getter yang berada pada class menu
+                // Daftar menu yang akan ditampilkan kepada pelanggan
+                System.out.print("\n");
+                System.out.print("Selamat Datang di Restoran Uzumaki\n");
+                System.out.print("----------------------------------\n");
+                System.out.print("Menu Khas Konoha yang Tersedia\n");
+                System.out.print("----------------------------------\n");
+                System.out.print(menuMakanan[0].getCategory());
+                System.out.print("\n");
+                //Menggunakan looping for untuk mencetak menu makanan
+                //dan minuman sehingga tidak perlu
+                //dicetak satu persatu
+                for (int i = 0; i < menuMakanan.length; i++) {
+                    System.out.print((i + 1) + "." + menuMakanan[i].getName() + "  " + menuMakanan[i].getPrice() + " " + "IDR\n");
+                }
+                System.out.print("----------------------------------\n");
+                System.out.print(menuMinuman[0].getCategory());
+                System.out.print("\n");
+                for (int i = 0; i < menuMinuman.length; i++) {
+                    System.out.print((i + 5) + "." + menuMinuman[i].getName() + " " + menuMinuman[i].getPrice() + " " + "IDR\n");
+                }
+                System.out.print("\n");
+                
+                //Kemudian Inisiasi Variable Penting yang akan Digunkana
+                //Pada Metode Pengelolaan dan Penerimaan Pesanan Pelanggan
+
+                ArrayList<String> pesanan; //Inisiasi ArrayList
+                //Ukuran Pesanan tidak terbatas sehingga diperlukan ArrayList 
+                //yang ukurannya dapat disesuaikan dengan input
+                pesanan = new ArrayList<>(); //Inisiasi ArrayList
+                ArrayList<Integer> jumlahPesanan;
+                jumlahPesanan = new ArrayList<>();
+                double totalBiaya = 0;
+                double biayaSetelahPajakLayanan = 0;
+                double biayaPajak = 0;
+                double biayaPelayanan = 0;
+                double biayaDiskon = 0;
+                double biayaSetelahDiskon = 0;
+
+                // Metode Untuk Mengelola Pesanan
+                int jumlahPesananSekarang = 0;//Awal Pesanan adalah 0, akan terus bertambah
+                //apabila pelanggan tidak input 0/selesai/jumlah pesanan melebihi batas maksimal
+                while (true) {
+                    System.out.print("\nSilahkah Masukkan Menu Pesanan Anda :\n");
+                    System.out.print("( Tekan 0 untuk Selesai)\n");
+                    System.out.print("Menu :   ");
+                    int nomorMenu = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (nomorMenu == 0) {//Disini Program akan Terus meminta pelanggan
+                        //Memasukkan menu yang mereka pesan, Namun jika input 0 maka program akan berakhir 
+                        //dan lompat ke perintah selanjutnya.
+                        break; // Pelanggan selesai memesan
+                    }
+
+                    if (nomorMenu < 1 || nomorMenu > menuMakanan.length + menuMinuman.length) {
+                        System.out.println("Menu Invalid. Silakan Coba Lagi.");
+                        continue;//Continue disini berfungsi agar jika input melebihi panjang
+                        //Array makanan dan minuman, maka akan print out "menu tidak valid" kemudian
+                        //Melanjutkan eksekusi perintah memasukkan pesanan.
+                    }
+
+                    System.out.println("Masukkan QTY :   ");
+                    int jumlah = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (jumlah <= 0) {
+                        System.out.println("Masukkan QTY yang Valid");
+                        continue;//Program akan terus mengeksekusi input qty kecuali nomor yang dimasukkan
+                        //kurang atau sama dengan 0
+                    }
+
+                    int indexMenu = nomorMenu - 1;
+                    if (indexMenu < menuMakanan.length) {
+                        //Ketika input nomor pesanan dan jumlah valid
+                        //Maka isi arrayList pesanan dan jumlah pesanan akan bertambah
+                        //Untuk itu ada metode add untuk indeks dan element 
+                        //(INI FUNGSI DARI IMPORT ARRAY)
+                        pesanan.add(jumlahPesananSekarang, menuMakanan[indexMenu].getName());
+                        jumlahPesanan.add(jumlahPesananSekarang, jumlah);
+                        double hargaItem = menuMakanan[indexMenu].getPrice();
+                        double subTotal = hargaItem * jumlah;
+                        totalBiaya += subTotal;
+
+                    } else {
+                        indexMenu -= menuMakanan.length;
+
+                        pesanan.add(jumlahPesananSekarang, menuMinuman[indexMenu].getName());
+                        jumlahPesanan.add(jumlahPesananSekarang, jumlah);
+                        double hargaItem = menuMakanan[indexMenu].getPrice();
+                        double subTotal = hargaItem * jumlah;
+                        totalBiaya += subTotal;
+
+                    }
+
+                    jumlahPesananSekarang++;
+                    //Menghitung Pajak,Layanan dan Biaya Setelah Pajak + Layanan
+                    biayaPajak = 0.10 * totalBiaya;
+                    biayaPelayanan = 20000;
+                    biayaSetelahPajakLayanan = totalBiaya + biayaPajak + biayaPelayanan;
+
+                    if (jumlahPesananSekarang >= 10000) {//Inisiasi Batas Hingga 1000
+                        //tidak diletakkan pada array biasa karena
+                        //array kosong akan tercetak pada struk
+                        System.out.println("Mencapai Batas Maksimal");
+                        break;
+
+                    }
+                }
+
+                // Metode untuk Menampilkan Struk
+                System.out.print("\n---------- Struk Pesanan----------\n");
+                System.out.println("----------RESTORAN UZUMAKI--------\n");
+                //Pesanan yang diinput akan dimasukkan dalam sebuah array[] pesanan
+                //oleh sebab itu, untuk menampilkan nama pesanan dan jumlahnya
+                //kita tinggal tuliskan array kemudian indeksnya.
+                //Menggunakan Looping for agar lebih ringkas
+                for (int i = 0; i < pesanan.size(); i++) {
+                    System.out.print((i + 1) + "." + pesanan.get(i) + "  = " + jumlahPesanan.get(i) + "\n");
+                }
+                System.out.print("----------------------------------\n");
+                System.out.print("Subtotal: " + "               " + +totalBiaya + " IDR" + "\n");
+                System.out.print("\t Biaya Pajak: " + "    " + biayaPajak + " IDR" + "\n");
+                System.out.print("\t Biaya Layanan: " + " " + biayaPelayanan + "   IDR" + "\n");
+                System.out.println("----------------------------------\n");
+
+                System.out.println("Total    :               " + biayaSetelahPajakLayanan + " IDR");
+                //Jika Biaya Keseluruhan Lebih dari 100 ribu
+                if (biayaSetelahPajakLayanan > 100000) {
+                    biayaDiskon = 0.10 * biayaSetelahPajakLayanan;
+                    biayaSetelahDiskon = biayaSetelahPajakLayanan - biayaDiskon;
+                    totalBiaya = (int) biayaSetelahDiskon;
+                    //Maka mendapatkan Diskon
+                    System.out.print("Diskon   :                " + biayaDiskon + " IDR" + "\n");
+                    System.out.println("----------------------------------\n");
+                    System.out.print("GrandTotal:              " + biayaSetelahDiskon + " IDR" + "\n");
+
+                } else {//Jika tidak maka akan menampilkan pemberitahuan ketentuan diskon
+                    System.out.print("Diskon 10% Khusus Pembelian di Atas 100.000\n");
+                }
+                if (totalBiaya > 50000) {//Jika total biaya lebih dari 50 ribu
+                    System.out.print("\nSelamat!\n");
+                    //Mendapat promo minuman
+                    System.out.print("Mendapatkan Promo Beli 1 Minuman Gratis 1\n");
+                    System.out.print("Silahkan Tukar Promo di Kasir\n");
+
+                }
+                System.out.print("Kembali Ke Menu Awal? [Y]/[N] : \t");
+                String backMenu = scanner.nextLine();
+                if ("n".equalsIgnoreCase(backMenu)) {
+                    programDone = true;
+                    System.out.print("TerimaKasih! Datang Kembali");
+                }
+            } else if (pilihanProgram == 2) {
+                System.out.print("\n");
+                System.out.print("Manajemen Restoran Uzumaki\n");
+                System.out.print("----------------------------------\n");
+                System.out.print("Nama Karyawan :\t");
+                String namaKaryawan = scanner.nextLine();
+                //Disini saya inisiasikan nama tetap
+                //untuk karyawan agar tidak bisa diakses
+                //oleh pelanggan
+                if ("adminUzumaki".equals(namaKaryawan)) {
+                    //Jika nama karyawan = inisiasi nama karyawan yang ditetapkan
+                    //Maka program menampilkan menu khusus manajemen restoran
+                    System.out.print("Menu Admin Restoran\n");
+                    System.out.print("----------------------------------\n");
+                    System.out.print("1. Tambah Menu Restoran\n");
+                    System.out.print("2. Ubah Menu Restoran\n");
+                    System.out.print("3. Update Harga Menu Restoran\n");
+                    System.out.print("----------------------------------\n");
+                    System.out.print("Masukkan Pilihan Anda : ");
+                    String pilihanAdmin = scanner.nextLine();
+                    //Di dalam kondisi nama karyawan = nama inisiasi
+                    //Jika pilihan 1 maka menambahkan menu
+                    if ("1".equals(pilihanAdmin)) {
+                        System.out.print("Menambah Menu Restoran\n");
+                        System.out.print("----------------------------------\n");
+
+                        System.out.print("Nama Menu : \t");
+                        String name = scanner.nextLine();
+                        System.out.print("Harga: \t");
+                        double price = scanner.nextDouble();
+                        scanner.nextLine();
+                        System.out.print("Kategori'Makanan'/'Minuman': \t");
+                        String category = scanner.nextLine();
+                        //jika kategori yg dimasukkan = makanan
+                        if ("Makanan".equals(category)) {
+                            Menu menuBaru = new Menu(name, price, category);
+                            //Kondisi menambahkan menu baru sesuai dengan parameter
+                            //yang ada pada kelas menu.java
+                            System.out.print("Tambahkan Menu? [Y]/[N] :\t");
+                            //Disini program akan meminta kepastian
+                            //dari pengguna yang 
+                            String tambahkanMknn = scanner.nextLine();
+                            //apabila pengguna ingin menambahkan maka
+                            if ("y".equalsIgnoreCase(tambahkanMknn)) {
+                                //menu tersebut akan dimasukkan dalam sebuah array baru
+                                //bernama menuMakananBaru yang kemudian akan
+                                //dimasukkan ke dalam array menuMakanan
+                                Menu[] menuMakananBaru = Arrays.copyOf(menuMakanan, menuMakanan.length + 1);
+                                menuMakananBaru[menuMakananBaru.length - 1] = menuBaru;
+                                menuMakanan = menuMakananBaru;
+                                System.out.print("Menu " + name + " Telah Ditambahkan\n");
+                                System.out.print("----------------------------------\n");
+                                System.out.print(menuMakanan[0].getCategory());
+                                System.out.print("\n");
+                            } else {//Jika pengguna memilih tidak maka
+                                System.out.print("Menu Tidak Berhasil Ditambahkan");
+                                System.out.print("----------------------------------\n");
+                            }
+                            for (int i = 0; i < menuMakanan.length; i++) {
+                                System.out.print((i + 1) + "." + menuMakanan[i].getName() + "  " + menuMakanan[i].getPrice() + " " + "IDR\n");
+                            }
+
+                        } else { //Jika bukan kategori makanan, maka program akan mengeksekusi
+                            Menu menuBaru = new Menu(name, price, category);
+                            System.out.print("Tambahkan Menu? [Y]/[N] :\t");
+                            String tambahkanMnmn = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(tambahkanMnmn)) {
+
+                                Menu[] menuMinumanBaru = Arrays.copyOf(menuMinuman, menuMinuman.length + 1);
+                                menuMinumanBaru[menuMinumanBaru.length - 1] = menuBaru;
+                                menuMinuman = menuMinumanBaru;
+                                System.out.print("Menu " + name + " Telah Ditambahkan\n");
+                                System.out.print("----------------------------------\n");
+                                System.out.print(menuMinuman[0].getCategory());
+                                System.out.print("\n");
+
+                            } else {
+                                System.out.print("Menu Tidak Berhasil Ditambahkan\n");
+                            }
+
+                            for (int i = 0; i < menuMinuman.length; i++) {
+                                System.out.print((i + 1) + "." + menuMinuman[i].getName() + "  " + menuMinuman[i].getPrice() + " " + "IDR\n");
+                            }
+
+                        }
+                        System.out.print("Kembali Ke Menu Awal? [Y]/[N] : \t");
+                        String backMenu = scanner.nextLine();
+                        if ("n".equalsIgnoreCase(backMenu)) {
+                            programDone = true;
+                            System.out.print("TerimaKasih! Datang Kembali");
+                        }
+                    //Kondisi if jika tidak pilih 1
+                    } else if ("2".equals(pilihanAdmin)) {
+                        System.out.print("Menu : \n");
+                        System.out.print("----------------------------------\n");
+                        for (int i = 0; i < menuMakanan.length; i++) {
+                            System.out.print((i + 1) + "." + menuMakanan[i].getName() + "  " + menuMakanan[i].getPrice() + " " + "IDR\n");
+                        }
+                        for (int i = 0; i < menuMinuman.length; i++) {
+                            System.out.print((i + 5) + "." + menuMinuman[i].getName() + "  " + menuMinuman[i].getPrice() + " " + "IDR\n");
+                        }
+                        System.out.print("----------------------------------\n");
+                        System.out.print("Nomor Menu yang Ingin dihapus : \t");
+                        int hapusMenu = scanner.nextInt();
+                        scanner.nextLine();//Inisiasikan scanner nextline setelah next int
+                        //agar inputan sebelumnya tidak mengganggu input selanjutnya
+                        //menandakan bahwa berikutnya akan ada input baru 
+                        //input lama tidak berhubungan sama sekali dengan input baru
+                        hapusMenu--;
+                        if (hapusMenu >= 0 && hapusMenu < menuMakanan.length) {
+                            System.out.print("Hapus " + menuMakanan[hapusMenu].getName() + "? [Y]/[N} : \t");
+                            String hapusTidak = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(hapusTidak)) {
+                                Menu[] newMenuMakanan = new Menu[menuMakanan.length - 1];
+                                for (int i = 0, j = 0; i < menuMakanan.length; i++) {
+                                    if (i != hapusMenu) {
+                                        newMenuMakanan[j++] = menuMakanan[i];
+                                    }
+                                }
+                                menuMakanan = newMenuMakanan;
+
+                                System.out.print("\n");
+                                System.out.print("Menu Baru : \n");
+                                for (int i = 0; i < menuMakanan.length; i++) {
+                                    System.out.print((i + 1) + "." + menuMakanan[i].getName() + "  " + menuMakanan[i].getPrice() + " " + "IDR\n");
+                                }
+
+                            } else {
+                                System.out.print("Menu Tidak Berhasil Dihapus");
+                            }
+                            for (int i = 0; i < menuMinuman.length; i++) {
+                                System.out.print((i + 5) + "." + menuMinuman[i].getName() + "  " + menuMinuman[i].getPrice() + " " + "IDR\n");
+                            }
+                        } else if (hapusMenu >= menuMakanan.length && hapusMenu < menuMakanan.length + menuMinuman.length) {
+
+                            int indeksPenyesuaian = hapusMenu - menuMakanan.length;
+                            System.out.print("Hapus " + menuMinuman[indeksPenyesuaian].getName() + "? {Y]/[N] :\t");
+                            String hapusYa = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(hapusYa)) {
+
+                                Menu[] newMenuMinuman = new Menu[menuMinuman.length - 1];
+                                for (int i = 0, j = 0; i < menuMinuman.length; i++) {
+                                    if (i != indeksPenyesuaian) {
+                                        newMenuMinuman[j++] = menuMinuman[i];
+                                    }
+                                }
+                                menuMinuman = newMenuMinuman;
+
+                            } else {
+                                System.out.print("Menu Tidak Berhasil Dihapus");
+                            }
+                            System.out.print("\n");
+                            System.out.print("Menu Baru : \n");
+                            for (int i = 0; i < menuMakanan.length; i++) {
+                                System.out.print((i + 1) + "." + menuMakanan[i].getName() + "  " + menuMakanan[i].getPrice() + " " + "IDR\n");
+                            }
+                            for (int i = 0; i < menuMinuman.length; i++) {
+                                System.out.print((i + 5) + "." + menuMinuman[i].getName() + "  " + menuMinuman[i].getPrice() + " " + "IDR\n");
+                            }
+
+                        }
+                        System.out.print("Kembali Ke Menu Awal? [Y]/[N] : \t");
+                        String backMenu = scanner.nextLine();
+                        if ("n".equalsIgnoreCase(backMenu)) {
+                            programDone = true;
+                            System.out.print("TerimaKasih! Datang Kembali");
+
+                        }
+                        //Jika tidak pilih 1/2 maka akan mengeksekusi
+                    } else if ("3".equals(pilihanAdmin)) {
+                        for (int i = 0; i < menuMakanan.length; i++) {
+                            System.out.print((i + 1) + "." + menuMakanan[i].getName() + "  " + menuMakanan[i].getPrice() + " " + "IDR\n");
+                        }
+                        for (int i = 0; i < menuMinuman.length; i++) {
+                            System.out.print((i + 5) + "." + menuMinuman[i].getName() + "  " + menuMinuman[i].getPrice() + " " + "IDR\n");
+                        }
+                        System.out.print("\n");
+                        System.out.print("----------------------------------\n");
+                        System.out.print("Menu Yang Akan Diupdate: \t");
+                        int updateHarga = scanner.nextInt();
+                        scanner.nextLine();
+                        updateHarga--;
+                        System.out.print("Harga Baru: \t");
+                        double hargaBaru = scanner.nextDouble();
+                        scanner.nextLine();
+                        if (updateHarga >= 0 && updateHarga < menuMakanan.length) {
+                            System.out.print("Ubah Harga " + menuMakanan[updateHarga].getName() + "? [Y]/[N] : \t");
+                            String ubahHarga = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(ubahHarga)) {//disini ada 
+                                //metode set.price
+                                //metode ini sudah diinisiasikan pada kelas menu.java
+                                //karena disini kita akan menetapkan harga baru
+                                //sehingga diperlukan metode set pada kelas menu
+                                //bisa untuk merubah nama ataupun kategori
+                                //tinggal menambahkan metode set name dan set category pada
+                                //kelas menu
+                                menuMakanan[updateHarga].setPrice(hargaBaru);
+                                System.out.print("----------------------------------\n");
+                            }
+
+                        } else if (updateHarga >= menuMakanan.length && updateHarga < menuMakanan.length + menuMinuman.length) {
+                            int indeksUpdateMinuman = updateHarga - menuMakanan.length;
+                            System.out.print("Ubah Harga " + menuMinuman[indeksUpdateMinuman].getName() + "? [Y]/[N} : \t");
+                            String ubahHargaMinuman = scanner.nextLine();
+                            if ("y".equalsIgnoreCase(ubahHargaMinuman)) {
+                                menuMinuman[indeksUpdateMinuman].setPrice(hargaBaru);
+                                System.out.print("----------------------------------\n");
+
+                            }
+                            for (int i = 0; i < menuMakanan.length; i++) {
+                                System.out.print((i + 1) + "." + menuMakanan[i].getName() + "  " + menuMakanan[i].getPrice() + " " + "IDR\n");
+                            }
+                            for (int i = 0; i < menuMinuman.length; i++) {
+                                System.out.print((i + 5) + "." + menuMinuman[i].getName() + "  " + menuMinuman[i].getPrice() + " " + "IDR\n");
+                            }
+
+                        }
+                        System.out.print("Kembali Ke Menu Awal? [Y]/[N] : \t");
+
+                        String backMenu = scanner.nextLine();
+                        if ("n".equalsIgnoreCase(backMenu)) {
+                            programDone = true;
+                            System.out.print("TerimaKasih! Datang Kembali");
+                        }
+
+                    }
+                } else {//ini adalah lanjutan fungsi if untuk memasukkan nama
+                    //karyawan. Apabila nama tidak sesuai dengan yg sudah ditentukan
+                    //maka program akan menganggap bahwa menu akan diakses oleh 
+                    //pelanggan atau org yg tidak diizinkan 
+                    //oleh sebab itu program akan menampilkan
+                    System.out.print("Anda Tidak Diizinkan Akses Program Ini\n");
+                    System.out.print("Kembali Ke Menu Awal? [Y]/[N] : \t");
+
+                    String backMenu = scanner.nextLine();
+                    if ("n".equalsIgnoreCase(backMenu)) {
+                        programDone = true;
+                        System.out.print("TerimaKasih! Datang Kembali");
+                    }
+
+                }
+
+            } else if (pilihanProgram == 0) {//Jika tidak memilih program 1/2 maka pilihan 0
+                //akan membuat program berhenti running
+                programDone = true;// dan kondisi boolean ProgramDone menjadi true sehingga tidak
+                //akan ada looping yang berjalan, program tidak meminta kembali ke menu parent
+                System.out.print("\n----------Keluar Program----------");
+                
+            }
+        }
+
+    }
+
+}
